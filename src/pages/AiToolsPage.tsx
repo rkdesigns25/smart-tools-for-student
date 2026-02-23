@@ -1,0 +1,227 @@
+import { useState, useMemo } from "react";
+import Layout from "@/components/layout/Layout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Plus, Trash2, Copy, Check, RotateCcw } from "lucide-react";
+import { Link } from "react-router-dom";
+
+// --- GPA Predictor ---
+function GpaPredictor() {
+  const [currentCgpa, setCurrentCgpa] = useState("");
+  const [completedCredits, setCompletedCredits] = useState("");
+  const [targetCgpa, setTargetCgpa] = useState("");
+  const [remainingCredits, setRemainingCredits] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const result = useMemo(() => {
+    const cc = parseFloat(currentCgpa), comp = parseFloat(completedCredits), tg = parseFloat(targetCgpa), rem = parseFloat(remainingCredits);
+    if ([cc, comp, tg, rem].some(isNaN) || comp <= 0 || rem <= 0) return null;
+    const needed = (tg * (comp + rem) - cc * comp) / rem;
+    return needed;
+  }, [currentCgpa, completedCredits, targetCgpa, remainingCredits]);
+
+  const copy = () => { if (result !== null) { navigator.clipboard.writeText(result.toFixed(2)); setCopied(true); setTimeout(() => setCopied(false), 1500); } };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div><Label className="text-sm">Current CGPA</Label><Input type="number" step="0.01" placeholder="7.5" value={currentCgpa} onChange={(e) => setCurrentCgpa(e.target.value)} /></div>
+        <div><Label className="text-sm">Completed Credits</Label><Input type="number" placeholder="90" value={completedCredits} onChange={(e) => setCompletedCredits(e.target.value)} /></div>
+        <div><Label className="text-sm">Target CGPA</Label><Input type="number" step="0.01" placeholder="8.0" value={targetCgpa} onChange={(e) => setTargetCgpa(e.target.value)} /></div>
+        <div><Label className="text-sm">Remaining Credits</Label><Input type="number" placeholder="30" value={remainingCredits} onChange={(e) => setRemainingCredits(e.target.value)} /></div>
+      </div>
+      {result !== null && (
+        <div className="glass-card p-6 text-center space-y-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+          <p className="text-sm text-muted-foreground">Required GPA in remaining credits</p>
+          <p className={`text-4xl font-bold ${result > 10 || result < 0 ? "text-destructive" : "text-primary"}`}>{result.toFixed(2)}</p>
+          {(result > 10 || result < 0) && <p className="text-sm text-destructive">This target may not be achievable.</p>}
+          <Button variant="outline" size="sm" onClick={copy}>{copied ? <><Check className="h-4 w-4 mr-1" />Copied</> : <><Copy className="h-4 w-4 mr-1" />Copy</>}</Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Attendance Planner ---
+function AttendancePlanner() {
+  const [currentAttended, setCurrentAttended] = useState("");
+  const [currentTotal, setCurrentTotal] = useState("");
+  const [plannedClasses, setPlannedClasses] = useState("");
+  const [requiredPct, setRequiredPct] = useState("75");
+
+  const result = useMemo(() => {
+    const a = parseFloat(currentAttended), t = parseFloat(currentTotal), p = parseFloat(plannedClasses), r = parseFloat(requiredPct);
+    if ([a, t, p, r].some(isNaN) || t <= 0 || p <= 0) return null;
+    const totalFuture = t + p;
+    const needed = Math.ceil((r / 100) * totalFuture - a);
+    const canSkip = p - Math.max(0, needed);
+    const weeksLeft = Math.ceil(p / 5); // assume ~5 classes/week
+    const perWeek = weeksLeft > 0 ? Math.ceil(Math.max(0, needed) / weeksLeft) : 0;
+    return { needed: Math.max(0, needed), canSkip: Math.max(0, canSkip), perWeek, weeksLeft };
+  }, [currentAttended, currentTotal, plannedClasses, requiredPct]);
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div><Label className="text-sm">Classes Attended So Far</Label><Input type="number" placeholder="40" value={currentAttended} onChange={(e) => setCurrentAttended(e.target.value)} /></div>
+        <div><Label className="text-sm">Total Classes So Far</Label><Input type="number" placeholder="50" value={currentTotal} onChange={(e) => setCurrentTotal(e.target.value)} /></div>
+        <div><Label className="text-sm">Planned Future Classes</Label><Input type="number" placeholder="30" value={plannedClasses} onChange={(e) => setPlannedClasses(e.target.value)} /></div>
+        <div><Label className="text-sm">Required %</Label><Input type="number" placeholder="75" value={requiredPct} onChange={(e) => setRequiredPct(e.target.value)} /></div>
+      </div>
+      {result && (
+        <div className="glass-card p-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+            <div><p className="text-xs text-muted-foreground">Must Attend</p><p className="text-2xl font-bold text-primary">{result.needed}</p><p className="text-xs text-muted-foreground">of upcoming classes</p></div>
+            <div><p className="text-xs text-muted-foreground">Can Skip</p><p className="text-2xl font-bold text-accent-foreground">{result.canSkip}</p><p className="text-xs text-muted-foreground">classes</p></div>
+            <div><p className="text-xs text-muted-foreground">Weekly Target</p><p className="text-2xl font-bold text-primary">{result.perWeek}</p><p className="text-xs text-muted-foreground">classes/week (~{result.weeksLeft}w)</p></div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Goal Calculator ---
+function GoalCalculator() {
+  const [target, setTarget] = useState("");
+  const [scores, setScores] = useState([{ id: crypto.randomUUID(), score: "", maxScore: "", weight: "" }]);
+  const [remainingWeight, setRemainingWeight] = useState("");
+
+  const result = useMemo(() => {
+    const tgt = parseFloat(target), rw = parseFloat(remainingWeight);
+    if (isNaN(tgt) || isNaN(rw) || rw <= 0) return null;
+    let earnedWeighted = 0, usedWeight = 0;
+    for (const s of scores) {
+      const sc = parseFloat(s.score), mx = parseFloat(s.maxScore), w = parseFloat(s.weight);
+      if (!isNaN(sc) && !isNaN(mx) && !isNaN(w) && mx > 0) {
+        earnedWeighted += (sc / mx) * w;
+        usedWeight += w;
+      }
+    }
+    const neededPct = ((tgt * (usedWeight + rw) / 100 - earnedWeighted) / rw) * 100;
+    return neededPct;
+  }, [target, scores, remainingWeight]);
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div><Label className="text-sm">Target Overall %</Label><Input type="number" placeholder="85" value={target} onChange={(e) => setTarget(e.target.value)} /></div>
+        <div><Label className="text-sm">Remaining Assessment Weight %</Label><Input type="number" placeholder="40" value={remainingWeight} onChange={(e) => setRemainingWeight(e.target.value)} /></div>
+      </div>
+      <p className="text-sm font-medium">Completed Assessments</p>
+      {scores.map((s, i) => (
+        <div key={s.id} className="flex gap-2 items-end">
+          <div className="flex-1"><Input type="number" placeholder="Score" value={s.score} onChange={(e) => setScores(p => p.map(x => x.id === s.id ? { ...x, score: e.target.value } : x))} /></div>
+          <div className="w-20"><Input type="number" placeholder="Max" value={s.maxScore} onChange={(e) => setScores(p => p.map(x => x.id === s.id ? { ...x, maxScore: e.target.value } : x))} /></div>
+          <div className="w-20"><Input type="number" placeholder="Wt %" value={s.weight} onChange={(e) => setScores(p => p.map(x => x.id === s.id ? { ...x, weight: e.target.value } : x))} /></div>
+          <Button variant="ghost" size="icon" onClick={() => scores.length > 1 && setScores(p => p.filter(x => x.id !== s.id))}><Trash2 className="h-4 w-4 text-muted-foreground" /></Button>
+        </div>
+      ))}
+      <Button variant="outline" size="sm" onClick={() => setScores(p => [...p, { id: crypto.randomUUID(), score: "", maxScore: "", weight: "" }])}><Plus className="h-4 w-4 mr-1" />Add Assessment</Button>
+
+      {result !== null && (
+        <div className="glass-card p-6 text-center space-y-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+          <p className="text-sm text-muted-foreground">Required Score in Remaining Assessments</p>
+          <p className={`text-4xl font-bold ${result > 100 || result < 0 ? "text-destructive" : "text-primary"}`}>{result.toFixed(1)}%</p>
+          {result > 100 && <p className="text-sm text-destructive">Target may not be achievable.</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Study Time Estimator ---
+function StudyTimeEstimator() {
+  const [hoursPerDay, setHoursPerDay] = useState("");
+  const [subjects, setSubjects] = useState([{ id: crypto.randomUUID(), name: "", difficulty: "3", daysUntilExam: "" }]);
+
+  const plan = useMemo(() => {
+    const h = parseFloat(hoursPerDay);
+    if (isNaN(h) || h <= 0) return null;
+    const valid = subjects.filter(s => s.name && !isNaN(parseFloat(s.daysUntilExam)) && parseFloat(s.daysUntilExam) > 0);
+    if (valid.length === 0) return null;
+    const totalWeight = valid.reduce((sum, s) => sum + parseFloat(s.difficulty), 0);
+    return valid.map(s => {
+      const d = parseFloat(s.difficulty), days = parseFloat(s.daysUntilExam);
+      const dailyHours = (d / totalWeight) * h;
+      return { name: s.name, dailyHours: dailyHours.toFixed(1), totalHours: (dailyHours * days).toFixed(0), days: Math.round(days) };
+    });
+  }, [hoursPerDay, subjects]);
+
+  return (
+    <div className="space-y-4">
+      <div><Label className="text-sm">Available Study Hours Per Day</Label><Input type="number" step="0.5" placeholder="6" value={hoursPerDay} onChange={(e) => setHoursPerDay(e.target.value)} className="max-w-xs" /></div>
+      <p className="text-sm font-medium">Subjects</p>
+      {subjects.map((s) => (
+        <div key={s.id} className="flex gap-2 items-end">
+          <div className="flex-1"><Input placeholder="Subject name" value={s.name} onChange={(e) => setSubjects(p => p.map(x => x.id === s.id ? { ...x, name: e.target.value } : x))} /></div>
+          <div className="w-28"><Input type="number" min="1" max="5" placeholder="Diff 1-5" value={s.difficulty} onChange={(e) => setSubjects(p => p.map(x => x.id === s.id ? { ...x, difficulty: e.target.value } : x))} /></div>
+          <div className="w-24"><Input type="number" placeholder="Days" value={s.daysUntilExam} onChange={(e) => setSubjects(p => p.map(x => x.id === s.id ? { ...x, daysUntilExam: e.target.value } : x))} /></div>
+          <Button variant="ghost" size="icon" onClick={() => subjects.length > 1 && setSubjects(p => p.filter(x => x.id !== s.id))}><Trash2 className="h-4 w-4 text-muted-foreground" /></Button>
+        </div>
+      ))}
+      <Button variant="outline" size="sm" onClick={() => setSubjects(p => [...p, { id: crypto.randomUUID(), name: "", difficulty: "3", daysUntilExam: "" }])}><Plus className="h-4 w-4 mr-1" />Add Subject</Button>
+
+      {plan && (
+        <div className="glass-card p-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+          <p className="text-sm text-muted-foreground mb-3 text-center">Daily Study Plan</p>
+          <div className="space-y-2">
+            {plan.map((p) => (
+              <div key={p.name} className="flex items-center justify-between glass-card px-4 py-3">
+                <span className="font-medium text-sm">{p.name}</span>
+                <div className="text-right">
+                  <span className="text-primary font-bold">{p.dailyHours}h/day</span>
+                  <span className="text-xs text-muted-foreground ml-2">({p.totalHours}h over {p.days}d)</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function AiToolsPage() {
+  return (
+    <Layout>
+      <div className="container px-4 py-10 max-w-3xl mx-auto space-y-8">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl md:text-4xl font-bold">🤖 Smart Planning Tools</h1>
+          <p className="text-muted-foreground">Advanced calculators to predict, plan, and optimize your academic performance.</p>
+        </div>
+
+        <div className="glass-card p-6">
+          <Tabs defaultValue="gpa">
+            <TabsList className="w-full flex-wrap h-auto gap-1">
+              <TabsTrigger value="gpa" className="flex-1">GPA Predictor</TabsTrigger>
+              <TabsTrigger value="attendance" className="flex-1">Attendance Planner</TabsTrigger>
+              <TabsTrigger value="goal" className="flex-1">Goal Calculator</TabsTrigger>
+              <TabsTrigger value="study" className="flex-1">Study Planner</TabsTrigger>
+            </TabsList>
+            <TabsContent value="gpa" className="mt-4"><GpaPredictor /></TabsContent>
+            <TabsContent value="attendance" className="mt-4"><AttendancePlanner /></TabsContent>
+            <TabsContent value="goal" className="mt-4"><GoalCalculator /></TabsContent>
+            <TabsContent value="study" className="mt-4"><StudyTimeEstimator /></TabsContent>
+          </Tabs>
+        </div>
+
+        <Accordion type="single" collapsible>
+          <AccordionItem value="how"><AccordionTrigger>How These Tools Work</AccordionTrigger><AccordionContent>Each tool uses mathematical formulas to calculate predictions. The GPA Predictor uses weighted averages, the Attendance Planner projects future attendance patterns, the Goal Calculator reverse-engineers required scores, and the Study Planner distributes time based on difficulty weights.</AccordionContent></AccordionItem>
+        </Accordion>
+
+        <div>
+          <h3 className="font-semibold mb-3">Related Tools</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <Link to="/cgpa" className="glass-card-hover p-4 text-center text-sm font-medium">🎓 CGPA</Link>
+            <Link to="/attendance" className="glass-card-hover p-4 text-center text-sm font-medium">📋 Attendance</Link>
+            <Link to="/percentage" className="glass-card-hover p-4 text-center text-sm font-medium">📊 Percentage</Link>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+}
