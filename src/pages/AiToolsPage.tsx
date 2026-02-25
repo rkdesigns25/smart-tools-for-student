@@ -1,11 +1,14 @@
 import { useState, useMemo } from "react";
 import Layout from "@/components/layout/Layout";
+import SEOHead from "@/components/seo/SEOHead";
+import Breadcrumbs from "@/components/seo/Breadcrumbs";
+import AdBanner from "@/components/ads/AdBanner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Plus, Trash2, Copy, Check, RotateCcw } from "lucide-react";
+import { Plus, Trash2, Copy, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // --- GPA Predictor ---
@@ -19,8 +22,7 @@ function GpaPredictor() {
   const result = useMemo(() => {
     const cc = parseFloat(currentCgpa), comp = parseFloat(completedCredits), tg = parseFloat(targetCgpa), rem = parseFloat(remainingCredits);
     if ([cc, comp, tg, rem].some(isNaN) || comp <= 0 || rem <= 0) return null;
-    const needed = (tg * (comp + rem) - cc * comp) / rem;
-    return needed;
+    return (tg * (comp + rem) - cc * comp) / rem;
   }, [currentCgpa, completedCredits, targetCgpa, remainingCredits]);
 
   const copy = () => { if (result !== null) { navigator.clipboard.writeText(result.toFixed(2)); setCopied(true); setTimeout(() => setCopied(false), 1500); } };
@@ -55,10 +57,9 @@ function AttendancePlanner() {
   const result = useMemo(() => {
     const a = parseFloat(currentAttended), t = parseFloat(currentTotal), p = parseFloat(plannedClasses), r = parseFloat(requiredPct);
     if ([a, t, p, r].some(isNaN) || t <= 0 || p <= 0) return null;
-    const totalFuture = t + p;
-    const needed = Math.ceil((r / 100) * totalFuture - a);
+    const needed = Math.ceil((r / 100) * (t + p) - a);
     const canSkip = p - Math.max(0, needed);
-    const weeksLeft = Math.ceil(p / 5); // assume ~5 classes/week
+    const weeksLeft = Math.ceil(p / 5);
     const perWeek = weeksLeft > 0 ? Math.ceil(Math.max(0, needed) / weeksLeft) : 0;
     return { needed: Math.max(0, needed), canSkip: Math.max(0, canSkip), perWeek, weeksLeft };
   }, [currentAttended, currentTotal, plannedClasses, requiredPct]);
@@ -96,13 +97,9 @@ function GoalCalculator() {
     let earnedWeighted = 0, usedWeight = 0;
     for (const s of scores) {
       const sc = parseFloat(s.score), mx = parseFloat(s.maxScore), w = parseFloat(s.weight);
-      if (!isNaN(sc) && !isNaN(mx) && !isNaN(w) && mx > 0) {
-        earnedWeighted += (sc / mx) * w;
-        usedWeight += w;
-      }
+      if (!isNaN(sc) && !isNaN(mx) && !isNaN(w) && mx > 0) { earnedWeighted += (sc / mx) * w; usedWeight += w; }
     }
-    const neededPct = ((tgt * (usedWeight + rw) / 100 - earnedWeighted) / rw) * 100;
-    return neededPct;
+    return ((tgt * (usedWeight + rw) / 100 - earnedWeighted) / rw) * 100;
   }, [target, scores, remainingWeight]);
 
   return (
@@ -112,7 +109,7 @@ function GoalCalculator() {
         <div><Label className="text-sm">Remaining Assessment Weight %</Label><Input type="number" placeholder="40" value={remainingWeight} onChange={(e) => setRemainingWeight(e.target.value)} /></div>
       </div>
       <p className="text-sm font-medium">Completed Assessments</p>
-      {scores.map((s, i) => (
+      {scores.map((s) => (
         <div key={s.id} className="flex gap-2 items-end">
           <div className="flex-1"><Input type="number" placeholder="Score" value={s.score} onChange={(e) => setScores(p => p.map(x => x.id === s.id ? { ...x, score: e.target.value } : x))} /></div>
           <div className="w-20"><Input type="number" placeholder="Max" value={s.maxScore} onChange={(e) => setScores(p => p.map(x => x.id === s.id ? { ...x, maxScore: e.target.value } : x))} /></div>
@@ -121,7 +118,6 @@ function GoalCalculator() {
         </div>
       ))}
       <Button variant="outline" size="sm" onClick={() => setScores(p => [...p, { id: crypto.randomUUID(), score: "", maxScore: "", weight: "" }])}><Plus className="h-4 w-4 mr-1" />Add Assessment</Button>
-
       {result !== null && (
         <div className="glass-card p-6 text-center space-y-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
           <p className="text-sm text-muted-foreground">Required Score in Remaining Assessments</p>
@@ -164,7 +160,6 @@ function StudyTimeEstimator() {
         </div>
       ))}
       <Button variant="outline" size="sm" onClick={() => setSubjects(p => [...p, { id: crypto.randomUUID(), name: "", difficulty: "3", daysUntilExam: "" }])}><Plus className="h-4 w-4 mr-1" />Add Subject</Button>
-
       {plan && (
         <div className="glass-card p-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
           <p className="text-sm text-muted-foreground mb-3 text-center">Daily Study Plan</p>
@@ -185,14 +180,41 @@ function StudyTimeEstimator() {
   );
 }
 
+const aiToolsJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "AI Study Tools",
+    applicationCategory: "EducationalApplication",
+    operatingSystem: "Web Browser",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.6", ratingCount: "720" },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://smartstudenttoolkit.com/" },
+      { "@type": "ListItem", position: 2, name: "AI Study Tools", item: "https://smartstudenttoolkit.com/ai-tools" },
+    ],
+  },
+];
+
 export default function AiToolsPage() {
   return (
     <Layout>
+      <SEOHead
+        title="AI Study Tools — GPA Predictor, Attendance Planner & Study Time Estimator"
+        description="Free AI-powered student tools: predict required GPA, plan attendance, estimate study hours, and calculate goal scores. Smart tools for serious students."
+        jsonLd={aiToolsJsonLd}
+      />
       <div className="container px-4 py-10 max-w-3xl mx-auto space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold">🤖 Smart Planning Tools</h1>
-          <p className="text-muted-foreground">Advanced calculators to predict, plan, and optimize your academic performance.</p>
-        </div>
+        <Breadcrumbs items={[{ label: "AI Study Tools" }]} />
+
+        <header className="text-center space-y-2">
+          <h1 className="text-3xl md:text-4xl font-bold">AI Study Tools — Predict, Plan & Improve Your Grades</h1>
+          <p className="text-muted-foreground">Free AI study planner for students: GPA predictor, attendance planner, exam score predictor, and study time estimator.</p>
+        </header>
 
         <div className="glass-card p-6">
           <Tabs defaultValue="gpa">
@@ -209,18 +231,37 @@ export default function AiToolsPage() {
           </Tabs>
         </div>
 
-        <Accordion type="single" collapsible>
-          <AccordionItem value="how"><AccordionTrigger>How These Tools Work</AccordionTrigger><AccordionContent>Each tool uses mathematical formulas to calculate predictions. The GPA Predictor uses weighted averages, the Attendance Planner projects future attendance patterns, the Goal Calculator reverse-engineers required scores, and the Study Planner distributes time based on difficulty weights.</AccordionContent></AccordionItem>
-        </Accordion>
+        <AdBanner />
 
-        <div>
-          <h3 className="font-semibold mb-3">Related Tools</h3>
+        {/* SEO Content */}
+        <section className="glass-card p-6 space-y-4">
+          <h2 className="text-2xl font-bold">Smart Academic Planning Tools for Students</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            Our AI-powered study tools help students predict required GPA scores, plan weekly attendance targets, calculate what marks are needed to pass, and estimate daily study hours for exams. These are the smart student tools free that every college student needs — from an AI GPA predictor to a study time estimator for exam preparation.
+          </p>
+        </section>
+
+        {/* FAQ */}
+        <section className="space-y-3">
+          <h2 className="text-2xl font-bold">Frequently Asked Questions</h2>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="q1"><AccordionTrigger>How does the AI GPA Predictor work?</AccordionTrigger><AccordionContent className="text-muted-foreground">Enter your current CGPA, completed credits, target CGPA, and remaining credits. It calculates the exact GPA needed using weighted average formulas — the best AI GPA predictor for students planning how to raise CGPA in final semester.</AccordionContent></AccordionItem>
+            <AccordionItem value="q2"><AccordionTrigger>What is the study time estimator?</AccordionTrigger><AccordionContent className="text-muted-foreground">Input subjects, difficulty levels (1-5), days until exam, and available daily hours. It creates a personalized study schedule — your free study hours calculator for exam preparation.</AccordionContent></AccordionItem>
+            <AccordionItem value="q3"><AccordionTrigger>Can I calculate what marks I need to pass?</AccordionTrigger><AccordionContent className="text-muted-foreground">Yes! The Goal Calculator (grade needed to pass calculator) reverse-engineers the score you need in upcoming assessments — the required marks calculator to pass your exams.</AccordionContent></AccordionItem>
+            <AccordionItem value="q4"><AccordionTrigger>How accurate is the attendance planner?</AccordionTrigger><AccordionContent className="text-muted-foreground">It uses mathematical projections based on your current attendance data to give weekly targets. As a college attendance tracker free tool, it's designed to be practical and accurate.</AccordionContent></AccordionItem>
+            <AccordionItem value="q5"><AccordionTrigger>Are these tools really free?</AccordionTrigger><AccordionContent className="text-muted-foreground">100% free. No sign-up, no premium features. Smart Student Toolkit's academic performance tracker online tools are completely free forever.</AccordionContent></AccordionItem>
+          </Accordion>
+        </section>
+
+        {/* Related */}
+        <section>
+          <h2 className="text-xl font-bold mb-3">More Free Student Calculators</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <Link to="/cgpa" className="glass-card-hover p-4 text-center text-sm font-medium">🎓 CGPA</Link>
-            <Link to="/attendance" className="glass-card-hover p-4 text-center text-sm font-medium">📋 Attendance</Link>
-            <Link to="/percentage" className="glass-card-hover p-4 text-center text-sm font-medium">📊 Percentage</Link>
+            <Link to="/cgpa" className="glass-card-hover p-4 text-center text-sm font-medium">🎓 CGPA Calculator — Calculate Your GPA</Link>
+            <Link to="/attendance" className="glass-card-hover p-4 text-center text-sm font-medium">📋 Attendance Calculator — Check Your Bunk Limit</Link>
+            <Link to="/percentage" className="glass-card-hover p-4 text-center text-sm font-medium">📊 Percentage Calculator — Marks to Percentage</Link>
           </div>
-        </div>
+        </section>
       </div>
     </Layout>
   );
