@@ -24,7 +24,7 @@ export default function AboutPage() {
         <section className="space-y-6">
           <h2 className="text-2xl font-bold">Our Mission</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Smart Student Toolkit was built to solve a simple problem: students waste hours searching for reliable CGPA calculators, attendance percentage calculators, and study planners that actually work. Most existing tools are bloated, full of ads, or require sign-up. We created a single destination where students in India, Pakistan, and worldwide can calculate CGPA, track attendance, find percentages, and plan studies — all for free, instantly.
+            Smart Student Toolkit was built to solve a simple problem: students waste hours searching for reliable CGPA calculators, attendance percentage calculators, and study planners that actually work. Most existing tools are bloated, full of ads, or require sign-up. We created a single destination where students worldwide can calculate CGPA, track attendance, find percentages, and plan studies — all for free, instantly.
           </p>
         </section>
 
