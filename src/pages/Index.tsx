@@ -55,7 +55,7 @@ export default function Index() {
     <Layout>
       <SEOHead
         title="Smart Student Toolkit — Free CGPA, Attendance & Percentage Calculator"
-        description="Free online CGPA calculator, attendance calculator, and percentage calculator for students. Instant results, zero sign-up. Trusted by students in India, Pakistan, and worldwide."
+        description="Free online CGPA calculator, attendance calculator, and percentage calculator for students. Instant results, zero sign-up. Trusted by students worldwide."
         jsonLd={homepageJsonLd}
       />
       {/* Hero */}
@@ -66,7 +66,7 @@ export default function Index() {
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Free calculators for CGPA, attendance, percentages, and smart study
-            planning — trusted by college and university students across India, Pakistan, and worldwide.
+            planning — trusted by college and university students worldwide.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" className="rounded-full px-8">
@@ -110,7 +110,7 @@ export default function Index() {
       {/* Trust / SEO section */}
       <section className="container px-4 pb-16">
         <div className="max-w-3xl mx-auto space-y-6">
-          <h2 className="text-2xl font-bold text-center">Trusted by Students Across India, Pakistan & Worldwide</h2>
+          <h2 className="text-2xl font-bold text-center">Trusted by Students Across India & Worldwide</h2>
           <p className="text-muted-foreground text-center leading-relaxed">
             Smart Student Toolkit provides free, instant academic calculators — from a free CGPA calculator online to an attendance percentage calculator, percentage calculator for marks, and AI study planner for students. No sign-up required. No ads blocking your results. Just fast, accurate tools built for real student needs.
           </p>

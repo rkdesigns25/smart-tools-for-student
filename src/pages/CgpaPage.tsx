@@ -210,7 +210,7 @@ export default function CgpaPage() {
         <section className="glass-card p-6 space-y-4">
           <h2 className="text-2xl font-bold">How to Calculate CGPA Online Free</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Our free CGPA calculator makes it easy for college and university students to calculate their Cumulative Grade Point Average instantly. Simply enter your grade points and credit hours for each subject — no sign-up, no login, no charge. This CGPA calculator with credits supports multiple grading scales used across India, US, UK, and Pakistan.
+            Our free CGPA calculator makes it easy for college and university students to calculate their Cumulative Grade Point Average instantly. Simply enter your grade points and credit hours for each subject — no sign-up, no login, no charge. This CGPA calculator with credits supports multiple grading scales used across India, US, UK, and worldwide.
           </p>
           <h3 className="text-lg font-semibold">CGPA Formula Used</h3>
           <p className="text-muted-foreground font-mono text-sm bg-muted/50 p-3 rounded-lg">
