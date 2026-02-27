@@ -4,8 +4,6 @@ import Breadcrumbs from "@/components/seo/Breadcrumbs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
 
-const BASE_URL = "https://smartstudenttoolkit.com";
-
 const faqSections = [
   {
     title: "🎓 CGPA Calculator FAQs",
