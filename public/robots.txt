@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Sitemap: https://smartstudenttoolkit.com/sitemap.xml
+Sitemap: https://smart-tools-for-student.lovable.app/sitemap.xml
