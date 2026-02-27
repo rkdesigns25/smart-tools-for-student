@@ -4,8 +4,7 @@ import Layout from "@/components/layout/Layout";
 import SEOHead from "@/components/seo/SEOHead";
 import AdBanner from "@/components/ads/AdBanner";
 import { Button } from "@/components/ui/button";
-
-const BASE_URL = "https://smartstudenttoolkit.com";
+import { SITE_URL } from "@/lib/site";
 
 const tools = [
   {
@@ -46,7 +45,7 @@ const homepageJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "Smart Student Toolkit",
-  url: BASE_URL,
+  url: SITE_URL,
   description: "Free academic calculators for students — CGPA, attendance, percentage, and AI study tools.",
 };
 

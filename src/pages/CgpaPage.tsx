@@ -146,8 +146,8 @@ const cgpaJsonLd = [
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://smartstudenttoolkit.com/" },
-      { "@type": "ListItem", position: 2, name: "CGPA Calculator", item: "https://smartstudenttoolkit.com/cgpa" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://smart-tools-for-student.lovable.app/" },
+      { "@type": "ListItem", position: 2, name: "CGPA Calculator", item: "https://smart-tools-for-student.lovable.app/cgpa" },
     ],
   },
 ];

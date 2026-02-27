@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { SITE_URL } from "@/lib/site";
 
 interface SEOHeadProps {
   title: string;
@@ -6,8 +7,6 @@ interface SEOHeadProps {
   canonical?: string;
   jsonLd?: object | object[];
 }
-
-const BASE_URL = "https://smartstudenttoolkit.com";
 
 export default function SEOHead({ title, description, canonical, jsonLd }: SEOHeadProps) {
   useEffect(() => {
@@ -23,16 +22,20 @@ export default function SEOHead({ title, description, canonical, jsonLd }: SEOHe
       el.content = content;
     };
 
+    const currentUrl = canonical || `${SITE_URL}${window.location.pathname}`;
+
     setMeta("description", description);
     setMeta("robots", "index, follow, max-snippet:-1, max-image-preview:large");
     setMeta("og:title", title, "property");
     setMeta("og:description", description, "property");
     setMeta("og:type", "website", "property");
     setMeta("og:site_name", "Smart Student Toolkit", "property");
-    setMeta("og:image", `${BASE_URL}/og-image.png`, "property");
+    setMeta("og:image", `${SITE_URL}/og-image.png`, "property");
+    setMeta("og:url", currentUrl, "property");
     setMeta("twitter:card", "summary_large_image");
     setMeta("twitter:title", title);
     setMeta("twitter:description", description);
+    setMeta("twitter:image", `${SITE_URL}/og-image.png`);
 
     // Canonical
     let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
@@ -41,7 +44,7 @@ export default function SEOHead({ title, description, canonical, jsonLd }: SEOHe
       link.rel = "canonical";
       document.head.appendChild(link);
     }
-    link.href = canonical || `${BASE_URL}${window.location.pathname}`;
+    link.href = currentUrl;
 
     // JSON-LD
     const existingScripts = document.querySelectorAll('script[data-seo="true"]');
