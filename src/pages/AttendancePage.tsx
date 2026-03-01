@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import Layout from "@/components/layout/Layout";
 import SEOHead from "@/components/seo/SEOHead";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
-import AdBanner from "@/components/ads/AdBanner";
+import { InContentAd } from "@/components/ads/AdPlacements";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -120,7 +120,7 @@ export default function AttendancePage() {
           </div>
         )}
 
-        <AdBanner />
+        <InContentAd />
 
         {/* SEO Content Block */}
         <section className="glass-card p-6 space-y-4">

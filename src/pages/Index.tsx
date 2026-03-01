@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Calculator, CalendarCheck, Percent, Brain, ArrowRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import SEOHead from "@/components/seo/SEOHead";
-import AdBanner from "@/components/ads/AdBanner";
+import { InContentAd } from "@/components/ads/AdPlacements";
 import { Button } from "@/components/ui/button";
 import { SITE_URL } from "@/lib/site";
 
@@ -104,7 +104,7 @@ export default function Index() {
         </div>
       </section>
 
-      <AdBanner />
+      <InContentAd />
 
       {/* Trust / SEO section */}
       <section className="container px-4 pb-16">
