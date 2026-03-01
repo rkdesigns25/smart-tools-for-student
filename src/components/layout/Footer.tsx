@@ -16,7 +16,7 @@ export default function Footer() {
       <div className="container px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-muted-foreground text-sm">
           <GraduationCap className="h-4 w-4" />
-          <span>© {new Date().getFullYear()} Smart Student Toolkit</span>
+          <span>© 2026 Smart Student Toolkit • Created & Designed by RK' Shetty</span>
         </div>
         <nav className="flex items-center gap-4">
           {footerLinks.map((link) => (
