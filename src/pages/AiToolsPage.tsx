@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import Layout from "@/components/layout/Layout";
 import SEOHead from "@/components/seo/SEOHead";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
-import AdBanner from "@/components/ads/AdBanner";
+import { InContentAd } from "@/components/ads/AdPlacements";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -231,7 +231,7 @@ export default function AiToolsPage() {
           </Tabs>
         </div>
 
-        <AdBanner />
+        <InContentAd />
 
         {/* SEO Content */}
         <section className="glass-card p-6 space-y-4">

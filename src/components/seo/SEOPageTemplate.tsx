@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import Layout from "@/components/layout/Layout";
 import SEOHead from "@/components/seo/SEOHead";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
-import AdBanner from "@/components/ads/AdBanner";
+import { InContentAd } from "@/components/ads/AdPlacements";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
 
@@ -52,7 +52,7 @@ export default function SEOPageTemplate({ title, metaDescription, h1, subtitle, 
 
         <div className="space-y-6">{children}</div>
 
-        <AdBanner />
+        <InContentAd />
 
         <section className="space-y-3">
           <h2 className="text-2xl font-bold">Frequently Asked Questions</h2>
