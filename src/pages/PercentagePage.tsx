@@ -107,8 +107,8 @@ const percentageJsonLd = [
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://smart-tools-for-student.lovable.app/" },
-      { "@type": "ListItem", position: 2, name: "Percentage Calculator", item: "https://smart-tools-for-student.lovable.app/percentage" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://smart-tools-for-student.vercel.app/" },
+      { "@type": "ListItem", position: 2, name: "Percentage Calculator", item: "https://smart-tools-for-student.vercel.app/percentage" },
     ],
   },
 ];
