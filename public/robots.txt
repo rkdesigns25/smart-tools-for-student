@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /api/
-Sitemap: https://smart-tools-for-student.lovable.app/sitemap.xml
+Sitemap: https://smart-tools-for-student.vercel.app/sitemap.xml
