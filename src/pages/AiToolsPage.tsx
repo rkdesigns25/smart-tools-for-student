@@ -3,6 +3,7 @@ import Layout from "@/components/layout/Layout";
 import SEOHead from "@/components/seo/SEOHead";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
 import { InContentAd } from "@/components/ads/AdPlacements";
+import { SITE_URL } from "@/lib/site";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -194,8 +195,8 @@ const aiToolsJsonLd = [
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://smart-tools-for-student.lovable.app/" },
-      { "@type": "ListItem", position: 2, name: "AI Study Tools", item: "https://smart-tools-for-student.lovable.app/ai-tools" },
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "AI Study Tools", item: `${SITE_URL}/ai-tools` },
     ],
   },
 ];
