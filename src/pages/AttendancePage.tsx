@@ -32,8 +32,8 @@ const attendanceJsonLd = [
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://smart-tools-for-student.vercel.app/" },
-      { "@type": "ListItem", position: 2, name: "Attendance Calculator", item: "https://smart-tools-for-student.vercel.app/attendance" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://smart-tools-for-student.lovable.app/" },
+      { "@type": "ListItem", position: 2, name: "Attendance Calculator", item: "https://smart-tools-for-student.lovable.app/attendance" },
     ],
   },
 ];
