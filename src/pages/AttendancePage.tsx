@@ -3,6 +3,7 @@ import Layout from "@/components/layout/Layout";
 import SEOHead from "@/components/seo/SEOHead";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
 import { InContentAd } from "@/components/ads/AdPlacements";
+import { SITE_URL } from "@/lib/site";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -32,8 +33,8 @@ const attendanceJsonLd = [
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://smart-tools-for-student.lovable.app/" },
-      { "@type": "ListItem", position: 2, name: "Attendance Calculator", item: "https://smart-tools-for-student.lovable.app/attendance" },
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Attendance Calculator", item: `${SITE_URL}/attendance` },
     ],
   },
 ];
