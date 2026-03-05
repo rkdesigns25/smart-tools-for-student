@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+
+User-agent: Googlebot
+Allow: /
 Disallow: /api/
 Sitemap: https://smart-tools-for-student.vercel.app/sitemap.xml
